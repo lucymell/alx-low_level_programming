@@ -1,31 +1,4 @@
-
-Search or jump to…
-Pulls
-Issues
-Marketplace
-Explore
- 
-@lucymell 
-tenmark86
-/
-alx-low_level_programming
-Public
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-More
-alx-low_level_programming/0x02-functions_nested_loops/5-sign.c
-@tenmark86
-tenmark86 added 5-sign.c
-Latest commit 609f170 1 hour ago
- History
- 1 contributor
-Executable File  30 lines (29 sloc)  414 Bytes
-   
-#include "main.h"
+   #include "main.h"
 
 /**
  * print_sign - Determines if the input number
