@@ -1,5 +1,3 @@
-!<arch>
-libmy.c/        0           0     0     644     693       `
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
@@ -25,4 +23,3 @@ char *_strpbrk(char *s, char *accept);
 char *_strstr(char *haystack, char *needle);
 
 #endif
-
