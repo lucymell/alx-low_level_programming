@@ -4,132 +4,132 @@
 #include <ctype.h>
 
 /**
- * adding_all_mul - sum all the addition to know the multiplication result
- * @a: number 1
- * @len_a: lenght of number 1
- * @b: number 2
- * @len_b: lenght of number 2
- * Return: Addition pointer to the total resul of the  multiplication
- */
-add_t *adding_all_mul(char *a, int len_a, char *b, int len_b)
+ * _memset - fills memory with a constant byte
+ *
+ * @s: input pointer that represents memory block
+ *     to fill
+ * @b: characters to fill/set
+ * @n: number of bytes to be filled
+ *
+ * Return: pointer to the filled memory area
+*/
+
+char *_memset(char *s, char b, unsigned int n)
 {
-	add_t *result = NULL;
-	int i = 0, j = 0, carry = 0;
+	unsigned int i = 0;
 
-	result = malloc(sizeof(add_t));
-
-	result->next = NULL, result->n_dig = 0, result->len_r = len_a + len_b;
-
-	result->n_add = malloc(sizeof(char) * result->len_r);
-
-	for (i = 0; i < result->len_r; i++)
-		result->n_add[i] = '0';
-
-	for (i = len_a - 1; i >= 0; i--)
+	while (i < n)
 	{
-		carry = 0;
-		for (j = len_b - 1; j >= 0; j--)
-		{
-			carry += (a[i] - '0') * (b[j] - '0');
-			carry += result->n_add[i + j + 1] - '0';
-
-			result->n_add[i + j + 1] = (carry % 10) + '0';
-			carry /= 10;
-		}
-		if (carry)
-			result->n_add[i + j + 1] = (carry % 10) + '0';
+		s[i] = b;
+		i++;
 	}
-	if (result->n_add[0] != '0')
-		result->n_dig = len_a + len_b;
-	else
-		result->n_dig = len_a + len_b - 1;
-
-	return (result);
+	return (s);
 }
 
 /**
- * print_free_result - print the result of the multiplication and free all
- * @result: Addition pointer to the total resul of the  multiplication
- * Result: Nothing
- */
-void print_free_result(add_t *result)
-{
-	int i = 0, start_n = 0;
+ * _calloc - function that allocates memory
+ *           for an array using memset
+ *
+ * @nmemb: size of array
+ * @size: size of each element
+ *
+ * Return: pointer to new allocated memory
+*/
 
-	i = 0;
-	while (i < result->n_dig)
+void *_calloc(unsigned int nmemb, unsigned int size)
+{
+	char *ptr;
+
+	if (nmemb == 0 || size == 0)
+		return (NULL);
+	ptr = malloc(nmemb * size);
+	if (ptr == NULL)
+		return (NULL);
+	_memset(ptr, 0, nmemb * size);
+
+	return (ptr);
+}
+
+
+/**
+ * multiply - initialize array with 0 byte
+ *
+ * @s1: string 1
+ * @s2: string 2
+ *
+ * Return: nothing
+*/
+
+void multiply(char *s1, char *s2)
+{
+	int i, l1, l2, total_l, f_digit, s_digit, res = 0, tmp;
+	char *ptr;
+	void *temp;
+
+	l1 = _length(s1);
+	l2 = _length(s2);
+	tmp = l2;
+	total_l = l1 + l2;
+	ptr = _calloc(sizeof(int), total_l);
+
+	/* store our pointer address to free later */
+	temp = ptr;
+
+	for (l1--; l1 >= 0; l1--)
 	{
-		if (start_n || result->n_add[result->len_r - result->n_dig + i] != '0')
+		f_digit = s1[l1] - '0';
+		res = 0;
+		l2 = tmp;
+		for (l2--; l2 >= 0; l2--)
 		{
-			_putchar(result->n_add[result->len_r - result->n_dig + i]);
-			start_n = 1;
+			s_digit = s2[l2] - '0';
+			res += ptr[l2 + l1 + 1] + (f_digit * s_digit);
+			ptr[l1 + l2 + 1] = res % 10;
+			res /= 10;
 		}
-		i++;
+		if (res)
+			ptr[l1 + l2 + 1] = res % 10;
 	}
-	if (!result->n_dig || !start_n)
+
+	while (*ptr == 0)
+	{
+		ptr++;
+		total_l--;
+	}
+
+	for (i = 0; i < total_l; i++)
+		printf("%i", ptr[i]);
+	printf("\n");
+	free(temp);
+}
+
+
+/**
+ * main - Entry point
+ *
+ * Description: a program that multiplies
+ *            two positive numbers
+ *
+ * @argc: number of arguments
+ * @argv: arguments array
+ *
+ * Return: 0 on success 98 on faliure
+*/
+
+int main(int argc, char *argv[])
+{
+	char *n1 = argv[1];
+	char *n2 = argv[2];
+
+	if (argc != 3 || check_number(n1) || check_number(n2))
+		error_exit();
+
+	if (*n1 == '0' || *n2 == '0')
+	{
 		_putchar('0');
-	_putchar('\n');
-	free(result->n_add);
-	free(result);
-}
-
-/**
- * error_message - print an error message and exit with status 98
- * Return: Nothing
- */
-void error_message(void)
-{
-	char error_msg[] = "Error";
-	int i = 0;
-
-	while (error_msg[i] != '\0')
-	{
-		_putchar(error_msg[i]);
-		i++;
+		_putchar('\n');
 	}
-
-	_putchar('\n');
-
-	exit(98);
-}
-
-/**
- * main - multiply 2 long numbers
- * usage <> ./mul num1 num2
- * @ac: number of arguments
- * @av: list of arguments
- * Return: 0 on success, another number otherwise
- */
-int main(int ac, char **av)
-{
-	char *a = NULL, *b =  NULL;
-	int i = 0, len_a = 0, len_b = 0, is_a = 1, is_b = 1, len_r = 0;
-	add_t *result = NULL;
-
-	if (ac != 3)
-		error_message();
-
-	for (i = 0, a = av[1], b = av[2]; is_a == 1 || is_b == 1; i++)
-	{
-		if (is_a == 1 && a[i] == '\0')
-			is_a = 0, len_a = i;
-		if (is_b == 1 && b[i] == '\0')
-			is_b = 0, len_b = i;
-		if ((is_a == 1 && (a[i] < '0' || a[i] > '9')) ||
-				(is_b == 1 && (b[i] < '0' || b[i] > '9')))
-			error_message();
-	}
-
-	if (len_a == 0 || len_b == 0)
-		error_message();
-
-	len_r = len_a + len_b;
-	if (len_a > len_b)
-		a = av[2], b = av[1], len_a = len_b, len_b = len_r - len_b;
-
-	result = adding_all_mul(a, len_a, b, len_b);
-
-	print_free_result(result);
-
+	else
+		multiply(n1, n2);
 	return (0);
 }
